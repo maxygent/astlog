@@ -1,4 +1,0 @@
-/home/eest/C++/astlog/build/CMakeFiles/astlog.dir
-/home/eest/C++/astlog/build/CMakeFiles/test.dir
-/home/eest/C++/astlog/build/CMakeFiles/edit_cache.dir
-/home/eest/C++/astlog/build/CMakeFiles/rebuild_cache.dir
