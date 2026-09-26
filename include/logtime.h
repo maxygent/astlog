@@ -17,7 +17,7 @@ std::string getLocalTime(std::string_view format = "%Y-%m-%d  %H:%M:%S");
 }
 }
 
-
+#include "logtime-inl.h"
 
 
 #endif

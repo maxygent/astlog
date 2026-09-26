@@ -122,7 +122,7 @@ private:
 
 
 
-
+#include "pattern_formatter-inl.h"
 
 
 #endif

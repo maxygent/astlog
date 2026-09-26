@@ -5,13 +5,12 @@
 #include <cstring>
 #include <string>
 
-namespace astlog{
-#define FOREACH(f) \
-    f(TRACE) f(DEBUG) f(INFO) f(WARN) f(ERROR) f(FATAL)
+namespace astlog {
+#define FOREACH(f) f(TRACE) f(DEBUG) f(INFO) f(WARN) f(ERROR) f(FATAL)
 
-enum class LEVEL : unsigned char{
+enum class LEVEL : unsigned char {
 #define LOGNAME(name) name,
-    FOREACH(LOGNAME)
+  FOREACH(LOGNAME)
 #undef LOGNAME
 };
 
@@ -20,13 +19,8 @@ LEVEL toLevel(std::string_view level);
 LEVEL toLevel(std::string level);
 
 using level_t = std::atomic<astlog::LEVEL>;
-}
+} // namespace astlog
 
-
-
-
-
-
-
+#include "loglevel-inl.h"
 
 #endif

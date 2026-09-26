@@ -2,7 +2,7 @@
 #define __ASTLOG_COMMON_HPP
 #include <cstddef>
 #include <type_traits>
-
+#include <mutex>
 
 
 namespace details{
@@ -35,6 +35,17 @@ size_t countDigit(T t)
         count += 4;
     }
 }
+
+// class Mutex{
+// public:
+//     Mutex(std::mutex mtx){}
+    
+//     ~Mutex(){}
+// private:
+//     std::mutex m_mtx;
+// };
+
+
 
 
 }

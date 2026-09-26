@@ -95,7 +95,7 @@ protected:
     
     void sinkIt(const details::logmsg& msg);
     void flush();
-    std::vector<sinkPtr> m_sinks;
+    std::vector<sink::sinkPtr> m_sinks;
     std::string m_name{"root"}; 
     level_t m_level{LEVEL::INFO};
     level_t m_flushLevel{LEVEL::ERROR};
@@ -105,6 +105,9 @@ protected:
 
 
 }
+
+
+#include "logger-inl.h"
 
 
 #endif

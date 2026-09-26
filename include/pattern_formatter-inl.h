@@ -21,7 +21,7 @@ class scopedPadder {
    public:
     scopedPadder(size_t wrapped_size, const paddingInfo &padinfo,
                  formatterBuf &dest)
-        : m_padinfo(padinfo), m_dest(dest) {
+        : m_padinfo(padinfo), m_dest(dest),m_truncate(dest.size()) {
         // 对齐大小 - 内容大小
         m_remainedPadding = static_cast<long>(padinfo.m_width) -
                             static_cast<long>(wrapped_size);
@@ -45,7 +45,7 @@ class scopedPadder {
             pad_it(m_remainedPadding);
         } else if (m_padinfo.m_truncate) {
             // 强制截断   remaining_pad是负数 强制截断
-            long new_size = m_padinfo.m_width;
+            long new_size = m_padinfo.m_width + m_truncate;
             if (new_size < 0) {
                 new_size = 0;
             }
@@ -55,7 +55,7 @@ class scopedPadder {
 
    private:
     void pad_it(long count) { m_dest.append(m_spaces.data(), count); }
-
+    size_t m_truncate;
     const paddingInfo &m_padinfo;
     formatterBuf &m_dest;
     int m_remainedPadding;
@@ -409,20 +409,20 @@ details::paddingInfo patternFormatter::handlePadspec(std::string::const_iterator
 
 
 
-#include <iostream>
-using namespace details;
+// #include <iostream>
+// using namespace details;
 
-int main() {
-    patternFormatter pattern{"%d%m %^20s [%t] [%l] [%n] [%e] [%v]"};
-    logmsg msg{
-        .m_level = astlog::LEVEL::FATAL,
-        .m_loc = std::source_location::current(),
-        .m_payload = "hello world",
-    };
-    std::this_thread::sleep_for(std::chrono::seconds(2));
-    formatterBuf buf;
-    pattern.format(msg,buf);
-    std::cout << buf.data()<<'\n';
+// int main() {
+//     patternFormatter pattern{"%d%m %^20!s [%t] [%l] [%n] [%e] [%v]"};
+//     logmsg msg{
+//         .m_level = astlog::LEVEL::FATAL,
+//         .m_loc = std::source_location::current(),
+//         .m_payload = "hello world",
+//     };
+//     std::this_thread::sleep_for(std::chrono::seconds(2));
+//     formatterBuf buf;
+//     pattern.format(msg,buf);
+//     std::cout << buf.data()<<'\n';
 
-    return 0;
-}
+//     return 0;
+// }
