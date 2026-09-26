@@ -10,10 +10,10 @@ set(ASTLOG_SINK_SRC
     # src/sink/console_sink.cc
     src/sink/file_sink.cc
 )
-set(ASTLOG_UTILS_SRC src/logtime.cc)
+set(ASTLOG_UTILS_SRC src/logtime.cc src/loglevel.cc)
 
 set(TEST src/pattern_formatter.cc)
-set(TEST test.cc)
+# set(TEST test.cc)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/libs) # 静态库 (.a)
 
 add_library(astlog STATIC ${ASTLOG_CORE_SRC} ${ASTLOG_SINK_SRC} ${ASTLOG_UTILS_SRC})

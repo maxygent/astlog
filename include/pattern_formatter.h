@@ -6,6 +6,7 @@
 #include "common.h"
 #include "membuf.h"
 #include "logmsg.h"
+#include "loglevel.h"
 
 namespace details{
 
@@ -39,12 +40,10 @@ public:
 
 class  flagFormatter {
 public:
-    explicit flagFormatter(paddingInfo padInfo)
-        : m_padInfo(padInfo) {}
+    explicit flagFormatter(paddingInfo padInfo):m_padInfo(padInfo){}
     flagFormatter() = default;
     virtual ~flagFormatter() = default;
-    virtual void format(const details::logmsg &msg,
-                        formatterBuf &dest) = 0;
+    virtual void format(const details::logmsg &msg, formatterBuf &dest) = 0;
 
 protected:
     paddingInfo m_padInfo;
@@ -53,9 +52,9 @@ protected:
 
 class  customFormatter : public flagFormatter {
 public:
-    virtual std::unique_ptr<flagFormatter> clone() const = 0;
+    virtual std::unique_ptr<customFormatter> clone() const = 0;
 
-    void set_padding_info(const paddingInfo &padding) {
+    void setPaddingInfo(const paddingInfo &padding) {
         flagFormatter::m_padInfo = padding;
     }
 };
@@ -65,14 +64,16 @@ public:
     using customFlags = std::unordered_map<char, std::unique_ptr<customFormatter>>;
 
     explicit patternFormatter(std::string pattern,
-                               std::string eol = EOL,
-                               customFlags custom_user_flags = customFlags());
+                               customFlags custom_user_flags = customFlags());                              
 
     // use default pattern is not given
-    explicit patternFormatter(std::string eol = EOL);
+    explicit patternFormatter();
 
     patternFormatter(const patternFormatter &other) = delete;
     patternFormatter &operator=(const patternFormatter &other) = delete;
+
+    patternFormatter(patternFormatter &&) = default;
+    patternFormatter &operator=(patternFormatter &&) = default;
 
     std::unique_ptr<formatter> clone() const override;
     void format(const logmsg &msg, formatterBuf &dest) override;
@@ -87,15 +88,17 @@ public:
 
 private:
     std::string m_pattern;
-    std::string m_EOL;
+
     bool need_localtime_;
-    std::chrono::seconds last_log_secs_;
-    std::vector<std::unique_ptr<formatter>> m_formatters;
+    // std::chrono::seconds last_log_secs_;
+    std::vector<std::unique_ptr<flagFormatter>> m_formatters;
     customFlags m_customHandlers;
 
     std::tm getTime(const logmsg &msg) const;
-    template <typename Padder>
-    void handleFlag(char flag, details::paddingInfo padding);
+    // template <typename Padder>
+    // void handleFlag(char flag, details::paddingInfo padding);
+    template <class Padder, class...Args>
+    void handleFlag(char flag, details::paddingInfo padding, Args... args);
 
     // Extract given pad spec (e.g. %8X)
     // Advance the given it pass the end of the padding spec found (if any)

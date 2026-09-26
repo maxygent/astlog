@@ -15,7 +15,7 @@ enum class LEVEL : unsigned char{
 #undef LOGNAME
 };
 
-std::string_view toStr(LEVEL level);
+std::string toStr(LEVEL level);
 LEVEL toLevel(std::string_view level);
 LEVEL toLevel(std::string level);
 

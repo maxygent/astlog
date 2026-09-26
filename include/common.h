@@ -1,6 +1,5 @@
 #ifndef __ASTLOG_COMMON_HPP
 #define __ASTLOG_COMMON_HPP
-#include <chrono>
 #include <cstddef>
 #include <type_traits>
 

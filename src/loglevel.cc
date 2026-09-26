@@ -2,14 +2,14 @@
 #include <string_view>
 namespace astlog{
 
-std::string_view toStr(LEVEL level){
+std::string toStr(LEVEL level){
     char res[32] = {'\0'};
     #define LEVELTOSTR(x) case LEVEL::x:{ strcpy(res,#x); break;}
     switch(level){
     FOREACH(LEVELTOSTR)
     }
     #undef LEVELTOSTR
-    return std::string_view{res,sizeof(res)};
+    return std::string{res,5};
 }
 
 
