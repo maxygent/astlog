@@ -121,9 +121,9 @@ private:
 
 inline constexpr size_t FORMATTED_RECORD_INLINE_CAPACITY = 256;
 
-inline constexpr size_t LOG_MESSAGE_INLINE_CAPACITY = 128;
+inline constexpr size_t LOG_MESSAGE_INLINE_CAPACITY = 256;
 
-inline constexpr size_t PRINTF_FORMAT_INLINE_CAPACITY = 128;
+inline constexpr size_t PRINTF_FORMAT_INLINE_CAPACITY = 256;
 
 using formatterBuf = inlineBuffer<FORMATTED_RECORD_INLINE_CAPACITY>;
 using logBuf = inlineBuffer<LOG_MESSAGE_INLINE_CAPACITY>;

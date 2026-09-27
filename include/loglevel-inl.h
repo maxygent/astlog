@@ -1,15 +1,15 @@
 #include "loglevel.h"
 #include <string_view>
-namespace astlog{
+
 
 std::string toStr(LEVEL level){
-    char res[32] = {'\0'};
-    #define LEVELTOSTR(x) case LEVEL::x:{ strcpy(res,#x); break;}
+    std::string res;
+    #define LEVELTOSTR(x) case LEVEL::x:{ res = #x; break;}
     switch(level){
     FOREACH(LEVELTOSTR)
     }
     #undef LEVELTOSTR
-    return std::string{res,5};
+    return std::move(res);
 }
 
 
@@ -25,4 +25,3 @@ LEVEL toLevel(std::string level){
     return toLevel(std::string_view{level.data(),level.size()});
 }
 
-}

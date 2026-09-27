@@ -1,4 +1,4 @@
-#include "sink/basic_sink.h"
+#include "basic_sink.h"
 #include "logmsg.h"
 #include "pattern_formatter.h"
 #include <memory>

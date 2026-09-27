@@ -7,7 +7,6 @@
 #include <ctime>
 #include <memory>
 #include <source_location>
-#include <thread>
 #include <utility>
 
 #include "common.h"
@@ -33,7 +32,7 @@ class scopedPadder {
             pad_it(m_remainedPadding);
             m_remainedPadding = 0;
         } else if (m_padinfo.m_side == paddingInfo::padSide::center) {
-            auto half_pad = m_remainedPadding / 2;  // 考虑可能截断
+            auto half_pad = ( m_remainedPadding + 1 )/ 2;  // 考虑可能截断
             auto reminder = m_remainedPadding & 1;  // 补上一个保证总宽度一致
             pad_it(half_pad);
             m_remainedPadding = half_pad + reminder;  // for the right side
@@ -88,7 +87,7 @@ class levelFormatter final : public flagFormatter {
    public:
     explicit levelFormatter(paddingInfo padinfo) : flagFormatter(padinfo) {}
     void format(const logmsg &msg, formatterBuf &dest) override {
-        auto level = astlog::toStr(msg.m_level);
+        auto level = toStr(msg.m_level);
         ScopedPadder _(level.size(), m_padInfo, dest);
         dest.append(level);
     }
@@ -97,8 +96,7 @@ class levelFormatter final : public flagFormatter {
 template <class scopedPadder>
 class timeFormatter final : public flagFormatter {
    public:
-    explicit timeFormatter(paddingInfo padinfo,
-                           std::string timeformat = "[%Y-%m-%d] %H:%M:%S")
+    explicit timeFormatter(paddingInfo padinfo,std::string timeformat = "[%Y-%m-%d] %H:%M:%S")
         : flagFormatter(padinfo), m_timeFormat(timeformat) {}
     void format(const logmsg &msg, formatterBuf &dest) override {
         // scopedPadder
@@ -415,7 +413,7 @@ details::paddingInfo patternFormatter::handlePadspec(std::string::const_iterator
 // int main() {
 //     patternFormatter pattern{"%d%m %^20!s [%t] [%l] [%n] [%e] [%v]"};
 //     logmsg msg{
-//         .m_level = astlog::LEVEL::FATAL,
+//         .m_level = LEVEL::FATAL,
 //         .m_loc = std::source_location::current(),
 //         .m_payload = "hello world",
 //     };

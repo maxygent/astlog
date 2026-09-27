@@ -1,13 +1,13 @@
 #ifndef __ASTLOG_BASIC_SINK_H
 #define __ASTLOG_BASIC_SINK_H
 
-#include <concepts>
 #include <cstdio>
 #include <memory>
 
 #include "logmsg.h"
 #include "pattern_formatter.h"
 #include "sink.h"
+#include "color_sink.h"
 
 namespace sink {
 

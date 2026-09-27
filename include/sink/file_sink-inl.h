@@ -27,6 +27,7 @@ void fileSink<Mutex>::sinkIt(const details::logmsg &msg) {
   details::formatterBuf buf;
   basicSink<Mutex>::m_formatter->format(msg,buf);
   std::fwrite(buf.data(), sizeof(char), buf.size(), m_file);
+  std::fwrite(details::EOL, sizeof(char),1, m_file);
 }
 
 template <Lockable Mutex> void fileSink<Mutex>::flush_() {

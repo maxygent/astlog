@@ -28,8 +28,7 @@ struct withSourceLocation {
    public:
     template <typename U>
         requires std::constructible_from<T, U>
-    consteval withSourceLocation(
-        U &&inner, std::source_location loc = std::source_location::current())
+    consteval withSourceLocation(U &&inner, std::source_location loc = std::source_location::current())
         : inner(std::forward<U>(inner)), loc(std::move(loc)) {}
     constexpr T const &format() const { return inner; }
     constexpr std::source_location const &location() const { return loc; }
@@ -90,6 +89,12 @@ public:
     }
     bool shouldFlush(LEVEL level){
         return level >= m_flushLevel.load(std::memory_order_relaxed);
+    }
+    void addSink(sink::sinkPtr sink){
+        m_sinks.push_back(std::move(sink));
+    }
+    bool empty(){
+        return m_sinks.empty();
     }
 protected:
     

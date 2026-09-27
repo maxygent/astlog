@@ -13,7 +13,7 @@ namespace details{
     
 struct logmsg{        
     inline static const clock::time_point m_timeStart = clock::now();
-    astlog::LEVEL m_level{astlog::LEVEL::TRACE};
+    LEVEL m_level{LEVEL::TRACE};
     clock::time_point m_timeStamp{clock::now()};
     std::string_view m_loggerName{""};
     // clock::duration m_timeElapsed;
@@ -23,7 +23,7 @@ struct logmsg{
     mutable size_t m_colorRangeStop{0};
 
     std::source_location m_loc;
-    std::string_view m_payload{""};
+    std::string m_payload{""};
 };
     
     
