@@ -1,9 +1,10 @@
-#ifndef __ASTLOG_ANSICOLOR_SINK_H
-#define __ASTLOG_ANSICOLOR_SINK_H
+#ifndef ASTLOG_ANSICOLOR_SINK_H
+#define ASTLOG_ANSICOLOR_SINK_H
 
-#include <unordered_map>
+
 #include "basic_sink.h"
 #include "logmsg.h"
+#include "pattern_formatter.h"
 // #include "logger.h"
 
 
@@ -15,7 +16,7 @@ template <Lockable Mutex>
 class ansicolorSink : public basicSink<Mutex> {
   public:
   ansicolorSink();
-  ansicolorSink( std::unordered_map<LEVEL,std::string> colorMap,std::unique_ptr<details::formatter> formatter = std::make_unique<details::formatter>(),FILE *target_file = stdout);
+  ansicolorSink( colorMap color,details::formatterPtr formatter = std::make_unique<details::patternFormatter>(),FILE *target_file = stdout);
   ~ansicolorSink() override = default;
 
   ansicolorSink(const ansicolorSink &other) = delete;
@@ -31,7 +32,7 @@ class ansicolorSink : public basicSink<Mutex> {
   void sinkIt(const details::logmsg&) override;
   void flush_() override;
   void sync_() override;
-  std::unordered_map<LEVEL,std::string> m_colorMap;
+  colorMap  m_colorMap;
   FILE* m_file;
 };
 

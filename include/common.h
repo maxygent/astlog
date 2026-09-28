@@ -1,20 +1,20 @@
-#ifndef __ASTLOG_COMMON_HPP
-#define __ASTLOG_COMMON_HPP
+#ifndef ASTLOG_COMMON_HPP
+#define ASTLOG_COMMON_HPP
 #include <cstddef>
 #include <type_traits>
-#include <unordered_map>
+
 
 #include "sink/color_sink.h"
-#include "loglevel.h"
+
 
 namespace defaultConfig{
-const static inline std::unordered_map<LEVEL,std::string> colorMap = {
-    {LEVEL::TRACE,sink::blue + sink::on_white},
-    {LEVEL::DEBUG,sink::white},
-    {LEVEL::INFO,sink::green + sink::on_cyan},
-    {LEVEL::WARN,sink::yellow_bold + sink::on_black},
-    {LEVEL::ERROR,sink::red},
-    {LEVEL::FATAL,sink::red+sink::on_white}};
+const static inline sink::colorMap colorMap = {
+    sink::blue + sink::on_white,
+    sink::white,
+    sink::green + sink::on_cyan,
+    sink::yellow_bold + sink::on_black,
+    sink::red,
+    sink::red+sink::on_white};
 
 const static inline std::string formatStr = "%d%m %s [%t] [%l] [%n] [%e] [%v]";
 
@@ -62,7 +62,7 @@ size_t countDigit(T t)
 //     ~Mutex(){}
 // private:
 //     std::mutex m_mtx;
-// };
+// ,
 
 
 

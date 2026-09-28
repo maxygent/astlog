@@ -1,20 +1,18 @@
-#ifndef __ASTLOG_BASIC_SINK_H
-#define __ASTLOG_BASIC_SINK_H
+#ifndef ASTLOG_BASIC_SINK_H
+#define ASTLOG_BASIC_SINK_H
 
 #include <cstdio>
-#include <memory>
 
 #include "logmsg.h"
 #include "pattern_formatter.h"
 #include "sink.h"
-#include "color_sink.h"
 
 namespace sink {
 
 template <Lockable Mutex> class basicSink : public sink {
 public:
   basicSink();
-  explicit basicSink(std::unique_ptr<details::formatter>);
+  explicit basicSink(details::formatterPtr);
 
   basicSink(const basicSink &) = delete;
   basicSink(basicSink &&) = delete;
@@ -25,7 +23,7 @@ public:
   void flush() final override;
   void sync() final override;
   void setPattern(const std::string &) final override;
-  void setFormatter(std::unique_ptr<details::formatter>) final override;
+  void setFormatter(details::formatterPtr) final override;
 
   ~basicSink() {}
 
@@ -33,9 +31,9 @@ protected:
   virtual void flush_() = 0;
   virtual void sync_() = 0;
   virtual void setPattern_(const std::string &);
-  virtual void setFormatter_(std::unique_ptr<details::formatter>);
+  virtual void setFormatter_(details::formatterPtr);
 
-  std::unique_ptr<details::formatter> m_formatter;
+  details::formatterPtr m_formatter;
   Mutex m_mtx;
 };
 

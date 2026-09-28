@@ -256,7 +256,7 @@ patternFormatter::patternFormatter(std::string pattern,
       m_customHandlers(std::move(custom_user_flags)) {
         compilePattern(m_pattern);
       }
-patternFormatter::patternFormatter() { patternFormatter(""); }
+patternFormatter::patternFormatter():patternFormatter(""){ }
 
 void patternFormatter::format(const logmsg &msg, formatterBuf &dest) {
     for (const auto &fmt : m_formatters) {
@@ -424,3 +424,5 @@ details::paddingInfo patternFormatter::handlePadspec(std::string::const_iterator
 
 //     return 0;
 // }
+
+

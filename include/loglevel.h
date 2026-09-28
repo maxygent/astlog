@@ -1,12 +1,13 @@
-#ifndef __ASTLOG_LOGLEVEL_HPP
-#define __ASTLOG_LOGLEVEL_HPP
+#ifndef ASTLOG_LOGLEVEL_HPP
+#define ASTLOG_LOGLEVEL_HPP
 
 #include <atomic>
 #include <cstring>
 #include <string>
+#include <type_traits>
 
 
-#define FOREACH(f) f(TRACE) f(DEBUG) f(INFO) f(WARN) f(ERROR) f(FATAL)
+#define FOREACH(f) f(TRACE) f(DEBUG) f(INFO) f(WARN) f(ERROR) f(FATAL) f(MAX)
 
 enum class LEVEL : unsigned char {
 #define LOGNAME(name) name,
@@ -14,9 +15,11 @@ enum class LEVEL : unsigned char {
 #undef LOGNAME
 };
 
-std::string toStr(LEVEL level);
-LEVEL toLevel(std::string_view level);
-LEVEL toLevel(std::string level);
+inline static constexpr size_t LEVEL_MAX = std::underlying_type_t<LEVEL>(LEVEL::MAX);
+constexpr std::string toStr(LEVEL level);
+constexpr LEVEL toLevel(std::string_view level);
+constexpr LEVEL toLevel(std::string level);
+constexpr size_t toIndex(LEVEL level);
 
 using level_t = std::atomic<LEVEL>;
  // namespace astlog

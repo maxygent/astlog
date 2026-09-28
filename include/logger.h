@@ -1,5 +1,5 @@
-#ifndef __ASTLOG_LOGGER_HPP
-#define __ASTLOG_LOGGER_HPP
+#ifndef ASTLOG_LOGGER_H
+#define ASTLOG_LOGGER_H
 
 #include <atomic>
 #include <string>

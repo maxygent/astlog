@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 project(astlog)
 
-set(CMAKE_CXX_COMPILER /usr/bin/g++)
-
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED on)
 
@@ -25,8 +23,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/libs) # 静态库 (.a)
 # target_link_libraries(astlog PUBLIC Threads::Threads)
 add_executable(test ${TEST})
 target_include_directories(test PUBLIC 
-${CMAKE_CURRENT_SOURCE_DIR}/include
-${CMAKE_CURRENT_SOURCE_DIR}/include/sink)
+${CMAKE_CURRENT_SOURCE_DIR}/include)
 # target_link_libraries(test astlog)
 # target_link_libraries(astlog_header_only include)
 

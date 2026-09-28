@@ -1,6 +1,4 @@
 #include <cstdio>
-#include <memory>
-#include <syncstream>
 #include <unistd.h>
 
 #include "logmsg.h"
@@ -14,7 +12,7 @@ namespace sink {
 
 template <Lockable Mutex>
 fileSink<Mutex>::fileSink(const std::string &fileName,
-                          std::unique_ptr<details::formatter> formatter)
+                          details::formatterPtr formatter)
     : basicSink<Mutex>(std::move(formatter)) {
 
   m_file = std::fopen(fileName.c_str(), "ab");

@@ -1,11 +1,12 @@
 #include <cstdio>
-#include <unordered_map>
 #include "ansicolor_sink.h"
 #include "basic_sink.h"
+#include "color_sink.h"
 #include "common.h"
+#include "loglevel.h"
 #include "logmsg.h"
 #include "membuf.h"
-#include "sink.h"
+
 
 namespace sink {
 
@@ -14,8 +15,8 @@ ansicolorSink<Mutex>::ansicolorSink(){}
 
 
 template<Lockable Mutex>
-ansicolorSink<Mutex>::ansicolorSink(std::unordered_map<LEVEL,std::string> colorMap,std::unique_ptr<details::formatter> formatter,FILE* target_file):
-m_colorMap(std::move(colorMap)),m_file(target_file),basicSink<Mutex>(std::move(formatter)){
+ansicolorSink<Mutex>::ansicolorSink(colorMap color,details::formatterPtr formatter,FILE* target_file):
+m_colorMap(color),m_file(target_file),basicSink<Mutex>(std::move(formatter)){
     if(!m_file)
     {
         perror("file can not be openned!  check if accessible");
@@ -25,7 +26,7 @@ m_colorMap(std::move(colorMap)),m_file(target_file),basicSink<Mutex>(std::move(f
 
 template<Lockable Mutex>
 void ansicolorSink<Mutex>::setColor(LEVEL level, std::string color){
-    m_colorMap[level] = color;
+    m_colorMap[toIndex(level)] = color;
 }
 
 template<Lockable Mutex>
@@ -39,7 +40,7 @@ void ansicolorSink<Mutex>::setColor(std::initializer_list<std::pair<LEVEL,std::s
 template<Lockable Mutex>
 void ansicolorSink<Mutex>::sinkIt(const details::logmsg& msg){
     details::formatterBuf buffer;
-    buffer.append(m_colorMap[msg.m_level]);
+    buffer.append(m_colorMap[toIndex(msg.m_level)]);
     basicSink<Mutex>::m_formatter->format(msg,buffer);
     buffer.append(reset);
     std::fwrite(buffer.data(),sizeof(char),buffer.size(),m_file);

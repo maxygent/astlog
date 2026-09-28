@@ -7,7 +7,7 @@
 namespace sink {
 
 template <Lockable Mutex>
-basicSink<Mutex>::basicSink(std::unique_ptr<details::formatter> formatter)
+basicSink<Mutex>::basicSink(details::formatterPtr formatter)
     : m_formatter(std::move(formatter)) {}
 
 template <Lockable Mutex>
@@ -32,7 +32,7 @@ template <Lockable Mutex> void basicSink<Mutex>::sync() {
 
 template <Lockable Mutex>
 void basicSink<Mutex>::setFormatter(
-    std::unique_ptr<details::formatter> formatter) {
+    details::formatterPtr formatter) {
   std::lock_guard<Mutex> lock(m_mtx);
   setFormatter_(std::move(formatter));
 }
@@ -44,19 +44,16 @@ void basicSink<Mutex>::setPattern(const std::string &pattern) {
 }
 
 template <Lockable Mutex>
-void basicSink<Mutex>::setFormatter_(
-    std::unique_ptr<details::formatter> formatter) {
-  m_formatter = std::move(formatter);
+void basicSink<Mutex>::setFormatter_(details::formatterPtr formatter) {
+    m_formatter = std::move(formatter);
 }
 
 template <Lockable Mutex>
 void basicSink<Mutex>::setPattern_(const std::string &pattern) {
-  std::lock_guard<Mutex> lock(m_mtx);
-  setPattern_(pattern);
+  m_formatter = std::make_unique<details::patternFormatter>(pattern);
 }
 
 } // namespace sink
-
 
 
 

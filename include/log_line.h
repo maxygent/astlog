@@ -1,27 +1,29 @@
-#ifndef __ASTLOG_LOG_LINE_H
-#define __ASTLOG_LOG_LINE_H
+#ifndef ASTLOG_LOG_LINE_H
+#define ASTLOG_LOG_LINE_H
 
 #include <pthread.h>
 #include <memory>
-#include "ansicolor_sink.h"
+
+#include "sink/ansicolor_sink.h"
 #include "logger.h"
-#include "sink.h"
 #include "common.h"
 
 struct LoggerImpl{
     
     static astlog::Logger& Logger(){
-        static astlog::Logger __Logger{"root"};
-        if(__Logger.empty())
-        {
-            sink::sinkPtr sink = std::make_shared<sink::ansicolorSink<sink::NonMutex>>(defaultConfig::colorMap,
+        static astlog::Logger logger{"root"};
+        static const bool initialized = [] (astlog::Logger& instance) {
+            sink::sinkPtr sink = std::make_shared<sink::ansicolorSink<sink::NonMutex>>(
+                defaultConfig::colorMap,
                 std::make_unique<details::patternFormatter>(defaultConfig::formatStr));
-                sink->setLevel(LEVEL::DEBUG);
-            __Logger.addSink(std::move(sink));
-            __Logger.setLevel(LEVEL::DEBUG);
-            __Logger.setFlush(LEVEL::INFO);
-        }
-        return __Logger;
+            sink->setLevel(LEVEL::DEBUG);
+            instance.addSink(std::move(sink));
+            instance.setLevel(LEVEL::DEBUG);
+            instance.setFlush(LEVEL::INFO);
+            return true;
+        }(logger);
+        (void)initialized;
+        return logger;
     }
 };
 

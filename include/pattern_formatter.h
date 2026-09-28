@@ -1,5 +1,5 @@
-#ifndef __ASTLOG_PATTERN_FORMATTER_H
-#define __ASTLOG_PATTERN_FORMATTER_H
+#ifndef ASTLOG_PATTERN_FORMATTER_H
+#define ASTLOG_PATTERN_FORMATTER_H
 #include <cstddef>
 #include <unordered_map>
 
@@ -83,8 +83,9 @@ public:
         m_customHandlers[flag] = std::make_unique<T>(std::forward<Args>(args)...);
         return *this;
     }
-    void set_pattern(std::string pattern);
-    void need_localtime(bool need = true);
+    void setPattern(std::string& pattern){
+        compilePattern(pattern);
+    }
 
 private:
     std::string m_pattern;
@@ -111,7 +112,7 @@ private:
 
 
 
-
+using formatterPtr = std::unique_ptr<formatter>;
 
 
 

@@ -2,26 +2,34 @@
 #include <string_view>
 
 
-std::string toStr(LEVEL level){
-    std::string res;
-    #define LEVELTOSTR(x) case LEVEL::x:{ res = #x; break;}
+constexpr std::string toStr(LEVEL level){
+    #define LEVELTOSTR(x) case LEVEL::x:{return #x;}
     switch(level){
     FOREACH(LEVELTOSTR)
+    default:
+        return "";
     }
     #undef LEVELTOSTR
-    return std::move(res);
+    
 }
 
 
-LEVEL toLevel(std::string_view level){
-    char res[32] = {'\0'};
+constexpr LEVEL toLevel(std::string_view level){
+    if(level == "MAX")
+        return LEVEL::INFO;
     #define LEVELTOSTR(x) if(level == #x) { return LEVEL::x;}
     FOREACH(LEVELTOSTR)
     #undef LEVELTOSTR
     return LEVEL::INFO;
 }
 
-LEVEL toLevel(std::string level){
+constexpr LEVEL toLevel(std::string level){
     return toLevel(std::string_view{level.data(),level.size()});
 }
+
+
+constexpr size_t toIndex(LEVEL level){
+    return static_cast<size_t>(level);
+}
+
 

@@ -1,12 +1,15 @@
-#ifndef __ASTLOG_COLOR_SINK_H
-#define __ASTLOG_COLOR_SINK_H
+#ifndef ASTLOG_COLOR_SINK_H
+#define ASTLOG_COLOR_SINK_H
 
 #include <string>
+#include <array>
 
+
+#include "loglevel.h"
 
 
 namespace sink{
-    const std::string reset = "\033[m";
+const std::string reset = "\033[m";
 const std::string bold = "\033[1m";
 const std::string dark = "\033[2m";
 const std::string underline = "\033[4m";
@@ -39,6 +42,9 @@ const std::string on_white = "\033[47m";
 const std::string yellow_bold = "\033[33m\033[1m";
 const std::string red_bold = "\033[31m\033[1m";
 const std::string bold_on_red = "\033[1m\033[41m";
+
+
+using colorMap = std::array<std::string,LEVEL_MAX>;
 }
 
 

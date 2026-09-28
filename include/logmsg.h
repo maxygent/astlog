@@ -1,5 +1,5 @@
-#ifndef __ASTLOG_logmsg_HPP
-#define __ASTLOG_logmsg_HPP
+#ifndef ASTLOG_logmsg_HPP
+#define ASTLOG_logmsg_HPP
 
 #include <source_location>
 #include <string_view>

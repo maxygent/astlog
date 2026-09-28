@@ -1,5 +1,5 @@
-#ifndef __ASTLOG_MEMBUF_H
-#define __ASTLOG_MEMBUF_H
+#ifndef ASTLOG_MEMBUF_H
+#define ASTLOG_MEMBUF_H
 #include <algorithm>
 #include <array>
 #include <cstddef>

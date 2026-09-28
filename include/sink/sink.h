@@ -1,8 +1,9 @@
-#ifndef __ASTLOG_SINK_HPP
-#define __ASTLOG_SINK_HPP
+#ifndef ASTLOG_SINK_HPP
+#define ASTLOG_SINK_HPP
 #include "logmsg.h"
 #include "pattern_formatter.h"
 #include <atomic>
+#include "mutex/lock_head.h"
 
 namespace sink {
 
@@ -14,12 +15,7 @@ struct NonMutex{
     }
 };
 
-template <class Mutex>
-concept Lockable = requires(Mutex &mtx) {
-  { mtx.lock() } -> std::same_as<void>;
-  { mtx.unlock() } -> std::same_as<void>;
-  { mtx.try_lock() } -> std::convertible_to<bool>;
-};
+
 
 
 class sink {
@@ -32,7 +28,7 @@ public:
   virtual void flush() = 0;
   virtual void sync() = 0;
   virtual void setPattern(const std::string &) = 0;
-  virtual void setFormatter(std::unique_ptr<details::formatter>) = 0;
+  virtual void setFormatter(details::formatterPtr) = 0;
 
   void setLevel(LEVEL level) {
     m_level.store(level, std::memory_order_relaxed);

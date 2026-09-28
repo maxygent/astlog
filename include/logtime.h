@@ -1,5 +1,5 @@
-#ifndef __ASTLOG_LOGTIME_H
-#define __ASTLOG_LOGTIME_H
+#ifndef ASTLOG_LOGTIME_H
+#define ASTLOG_LOGTIME_H
 #include <chrono>
 #include <ctime>
 #include <string_view>
