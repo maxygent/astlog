@@ -19,19 +19,12 @@ void asyncLogger::sinkIt(const details::logmsg& msg)
 {
     if(auto threadPool = m_pool.lock();threadPool)
     {
-        // 保留一个计数 有消息存在的情况下不销毁
-        // 但是通常不会使用局部的Logger？
-        // if(weak_from_this().lock())
-        // {
-        threadPool->appendTask([instance = shared_from_this(),message = std::move(msg)]{
-        instance->backendSink(std::move(message));
-        });
-        // }
-        // else {
-        //     threadPool->appendTask([instance = this,message = std::move(msg)]{
-        //     instance->backendSink(std::move(message));
-        //     });
-        // }
+        for(auto &sinker:m_sinks)
+        {
+            if(sinker->shouldLog(msg.m_level))
+                threadPool->postmsg(sinker,msg);
+        }
+        
     }
 }
 

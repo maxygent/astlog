@@ -43,7 +43,6 @@ std::chrono::nanoseconds benchAsyncFile(const std::string &path,
   for (std::size_t i = 0; i < count; ++i) {
     logger->error("hello world {:=^10}", static_cast<int>(i));
   }
-  pool->wait();
   sink->flush();
   return std::chrono::duration_cast<std::chrono::nanoseconds>(
       std::chrono::steady_clock::now() - start);

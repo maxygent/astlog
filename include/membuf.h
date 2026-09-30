@@ -22,26 +22,54 @@ namespace details{
 template<class DataType,size_t CacheSize = 32 >
 class DataBuf{
 public:
-    template<class...Args>
-    DataBuf(Args&&...args)
-    {  
-        std::construct_at(std::reinterpret_pointer_cast<DataType*>(m_storage),std::forward(args)...);
+    DataBuf() = default;
+
+    bool empty() const noexcept {
+        return m_head.load(std::memory_order_acquire) == m_tail.load(std::memory_order_acquire);
     }
-    DataType* front(){
-        auto index = m_head.exchange(m_head + 1);
-        return std::launder(std::reinterpret_pointer_cast<DataType*>(&m_storage[index * CacheSize]));
+
+    DataType* front() {
+        const size_t head = m_head.load(std::memory_order_acquire);
+        if (head == m_tail.load(std::memory_order_acquire)) {
+            return nullptr;
+        }
+        return ptr_at(head);
     }
-    void pop(){
-        m_head = (m_head + 1) % CacheSize;
+
+    void pop() {
+        const size_t head = m_head.load(std::memory_order_relaxed);
+        if (head == m_tail.load(std::memory_order_acquire)) {
+            return;
+        }
+        std::destroy_at(ptr_at(head));
+        m_head.store((head + 1) % CacheSize, std::memory_order_release);
     }
-    void push(){
-        m_tail = (m_tail + 1) % CacheSize;
+
+    void push(DataType data) {
+        const size_t tail = m_tail.load(std::memory_order_relaxed);
+        const size_t head = m_head.load(std::memory_order_acquire);
+        if (((tail + 1) % CacheSize) == head) {
+            std::destroy_at(ptr_at(head));
+            m_head.store((head + 1) % CacheSize, std::memory_order_release);
+        }
+
+        auto index = m_tail.load(std::memory_order_relaxed);
+        std::construct_at(ptr_at(index), std::move(data));
+        m_tail.store((index + 1) % CacheSize, std::memory_order_release);
     }
+
     ~DataBuf(){
-        std::destroy_at(front());
+        while (!empty()) {
+            std::destroy_at(ptr_at(m_head.load(std::memory_order_relaxed)));
+            m_head.store((m_head.load(std::memory_order_relaxed) + 1) % CacheSize, std::memory_order_release);
+        }
     }
 private:
-    alignas(DataType) std::byte m_storage[CacheSize*sizeof(DataType)];
+    DataType* ptr_at(size_t index) noexcept {
+        return std::launder(reinterpret_cast<DataType*>(&m_storage[index * sizeof(DataType)]));
+    }
+
+    alignas(DataType) std::byte m_storage[CacheSize * sizeof(DataType)]{};
     std::atomic<size_t> m_head{0};
     std::atomic<size_t> m_tail{0};
 };
