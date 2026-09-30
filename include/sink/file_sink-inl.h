@@ -13,12 +13,12 @@ namespace sink {
 template <Lockable Mutex>
 fileSink<Mutex>::fileSink(const std::string &fileName,
                           details::formatterPtr formatter)
-    : basicSink<Mutex>(std::move(formatter)) {
+    : basicSink<Mutex>(std::move(formatter)),m_file(::fopen(fileName.c_str(),"ab")) {
 
-  m_file = std::fopen(fileName.c_str(), "ab");
-  if (!m_file) {
-    perror("File not exists or access denied");
-  }
+  // m_file = std::fopen(fileName.c_str(), "ab");
+  // if (!m_file) {
+  //   perror("File not exists or access denied");
+  // }
 }
 template <Lockable Mutex>
 void fileSink<Mutex>::sinkIt(const details::logmsg &msg) {

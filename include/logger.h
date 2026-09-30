@@ -9,6 +9,7 @@
 
 
 #include "loglevel.h"
+#include "membuf.h"
 #include "sink/sink.h"
 #include "logmsg.h"
 
@@ -17,6 +18,7 @@
 #endif
 
 namespace astlog{
+
 
 
 template <typename T>
@@ -37,15 +39,21 @@ struct withSourceLocation {
 
 class Logger{
 public:
-    explicit Logger(std::string name):m_name(std::move(name)){}
+    explicit Logger(std::string name,sink::sinkPtr sink);
+    explicit Logger(std::string name,std::initializer_list<sink::sinkPtr> sinks);
+
+    template <class It>
+    explicit Logger(std::string name,It begin,It end):m_name(std::move(name)),m_sinks(begin,end){}
     template<class..._Args>
     void log(LEVEL level, withSourceLocation<std::format_string<_Args...>> fmt,_Args &&...args){
         if(shouldLog(level)){
+            details::formatterBuf buf;
+            std::format_to(buf.data(),fmt.format(),std::forward<_Args>(args)...);
             details::logmsg msg{ 
                 .m_level = level,
                 .m_loggerName = m_name,
                 .m_loc = fmt.location(),
-                .m_payload = std::format(fmt.format(),std::forward<_Args>(args)...),
+                .m_payload = {buf.data(),buf.size()},
             };
             sinkIt(std::move(msg));
         }
@@ -98,11 +106,11 @@ public:
     }
 protected:
     
-    void sinkIt(const details::logmsg& msg);
+    virtual void sinkIt(const details::logmsg& msg);
     void flush();
     std::vector<sink::sinkPtr> m_sinks;
     std::string m_name{"root"}; 
-    level_t m_level{LEVEL::INFO};
+    level_t m_level{LEVEL::DEBUG};
     level_t m_flushLevel{LEVEL::ERROR};
 
 };

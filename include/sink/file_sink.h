@@ -6,7 +6,7 @@
 #include "basic_sink.h"
 #include "logmsg.h"
 #include "pattern_formatter.h"
-
+#include "membuf.h"
 namespace sink {
 
 template <Lockable Mutex> class fileSink : public basicSink<Mutex> {
@@ -30,6 +30,7 @@ private:
   void flush_() final override;
   void sync_() final override;
   std::FILE *m_file;
+  // details::Logbuffer<> buffer;
 };
 
 } // namespace sink

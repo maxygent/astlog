@@ -3,16 +3,49 @@
 #include <algorithm>
 #include <array>
 #include <cstddef>
+#include <cstdio>
 #include <cstring>
+#include <memory>
+#include <new>
 #include <streambuf>
 #include <string_view>
+#include <utility>
 #include <vector>
-
+#include <atomic>
 
 
 
 
 namespace details{
+
+
+template<class DataType,size_t CacheSize = 32 >
+class DataBuf{
+public:
+    template<class...Args>
+    DataBuf(Args&&...args)
+    {  
+        std::construct_at(std::reinterpret_pointer_cast<DataType*>(m_storage),std::forward(args)...);
+    }
+    DataType* front(){
+        auto index = m_head.exchange(m_head + 1);
+        return std::launder(std::reinterpret_pointer_cast<DataType*>(&m_storage[index * CacheSize]));
+    }
+    void pop(){
+        m_head = (m_head + 1) % CacheSize;
+    }
+    void push(){
+        m_tail = (m_tail + 1) % CacheSize;
+    }
+    ~DataBuf(){
+        std::destroy_at(front());
+    }
+private:
+    alignas(DataType) std::byte m_storage[CacheSize*sizeof(DataType)];
+    std::atomic<size_t> m_head{0};
+    std::atomic<size_t> m_tail{0};
+};
+
 
 template <size_t INLINE_CAPACITY>
 class inlineBuffer
@@ -51,7 +84,7 @@ public:
     }
     void erase(size_t size)
     {
-        if(size >= 0){
+        if(size >= 0 && size < INLINE_CAPACITY){
             m_size = size;
             if(m_overflow.empty())
                 m_inline[m_size] = '\0';
@@ -66,7 +99,11 @@ public:
     {
         return m_overflow.empty() ? m_inline.data() : m_overflow.data();
     }
-    
+    [[nodiscard]] char* data()
+    {
+        return m_overflow.empty() ? m_inline.data() : m_overflow.data();
+    }
+
     [[nodiscard]] size_t size() const noexcept
     {
         return m_size;
